@@ -396,6 +396,7 @@ namespace Zadatak_1
 
                     case "stlist":
                         Commands.STList();
+                        Console.WriteLine("");
                         break;
 
 
