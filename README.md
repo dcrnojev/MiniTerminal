@@ -1,1 +1,2 @@
 # MiniTerminal
+Nesto smisleno
