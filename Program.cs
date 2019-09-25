@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using System.IO;
 
 namespace Zadatak_1
 {
@@ -22,6 +23,7 @@ namespace Zadatak_1
                 DEV = new List<ClassDEV> { };
                 DSNR = new List<ClassDSNR> { };
                 ST = new List<ClassST> { };
+    
             }
 
             public class ClassCEO : Role
@@ -69,75 +71,10 @@ namespace Zadatak_1
         {
 
             private readonly Roles roles;
-            public Commands(Roles roles)
+            public Commands(Roles rolesCon)
             {
-                this.roles = roles;
-            }
-
-            public void CEOList()
-            {
-                foreach (var employee in roles.CEO)
-                {
-                    Console.WriteLine("{0}, {1}, {2}, {3} ", employee.FirstName, employee.LastName, employee.Age, employee.CeoYears);
-                }
-            }
-
-            public void PMList()
-            {
-                foreach (var employee in roles.PM)
-                {
-                    Console.WriteLine("{0}, {1}, {2}, {3} ", employee.FirstName, employee.LastName, employee.Age, employee.Project);
-                }
-            }
-            public void DEVList()
-            {
-                foreach (var employee in roles.DEV)
-                {
-                    Console.WriteLine("{0}, {1}, {2}, {3} ", employee.FirstName, employee.LastName, employee.Age, employee.Project, employee.IsStudent);
-                }
-            }
-
-            public void DSNRList()
-            {
-                foreach (var employee in roles.DSNR)
-                {
-                    Console.WriteLine("{0}, {1}, {2}, {3} ", employee.FirstName, employee.LastName, employee.Age, employee.Project, employee.CanDraw);
-                }
-            }
-
-            public void STList()
-            {
-                foreach (var employee in roles.ST)
-                {
-                    Console.WriteLine("{0}, {1}, {2}, {3} ", employee.FirstName, employee.LastName, employee.Age, employee.Project, employee.UsesAutomatedTests);
-                }
-            }
-
-            public void List()
-            {
-                Console.WriteLine("CEO: ");
-                CEOList();
-                Console.WriteLine("PM: ");
-                PMList();
-                Console.WriteLine("DEV: ");
-                DEVList();
-                Console.WriteLine("DSNR: ");
-                DSNRList();
-                Console.WriteLine("ST: ");
-                STList();
-            }
-            public void Display()
-            {
-                Console.WriteLine("PM: ");
-                PMList();
-                Console.WriteLine("DEV: ");
-                DEVList();
-                Console.WriteLine("DSNR: ");
-                DSNRList();
-                Console.WriteLine("ST: ");
-                STList();
-            }
-
+                roles = rolesCon;
+            }    
             public void Remove()
             {
                 Console.Write("Role: ");
@@ -172,6 +109,8 @@ namespace Zadatak_1
                 {
                     roles.ST.RemoveAll(r => (Equals(r.FirstName, name) && Equals(r.LastName, surname)));
                 }
+                Save();
+                Load();
             }
 
             public void Add()
@@ -339,17 +278,193 @@ namespace Zadatak_1
             {
                 Console.WriteLine("Available commands: Add, Remove, Display, List, <role_name>List");
             }
-        }
 
+            
+            public void Save()
+            {
+                File.Delete("Data.txt");
+                foreach(var employee in roles.CEO)
+                {
+                    string newEmployee = String.Format("CEO, {0}, {1}, {2}, {3}", employee.FirstName, employee.LastName, employee.Age, employee.CeoYears);
+                    File.AppendAllText("Data.txt", newEmployee+Environment.NewLine);
+                }
+
+                foreach (var employee in roles.PM)
+                {
+                    string newEmployee = String.Format("PM, {0}, {1}, {2}, {3}", employee.FirstName, employee.LastName, employee.Age, employee.Project);
+                    File.AppendAllText("Data.txt", newEmployee + Environment.NewLine);
+                }
+
+                foreach (var employee in roles.DEV)
+                {
+                    string newEmployee = String.Format("DEV, {0}, {1}, {2}, {3}, {4}", employee.FirstName, employee.LastName, employee.Age, employee.Project, employee.IsStudent);
+                    File.AppendAllText("Data.txt", newEmployee + Environment.NewLine);
+                }
+
+                foreach (var employee in roles.DSNR)
+                {
+                    string newEmployee = String.Format("DSNR, {0}, {1}, {2}, {3}, {4}", employee.FirstName, employee.LastName, employee.Age, employee.Project, employee.CanDraw);
+                    File.AppendAllText("Data.txt", newEmployee + Environment.NewLine);
+                }
+
+                foreach (var employee in roles.ST)
+                {
+                    string newEmployee = String.Format("ST, {0}, {1}, {2}, {3}, {4}", employee.FirstName, employee.LastName, employee.Age, employee.Project, employee.UsesAutomatedTests);
+                    File.AppendAllText("Data.txt", newEmployee + Environment.NewLine);
+                }
+
+                Console.WriteLine("Data saved.");
+            }
+
+            List<string> allLinesText = File.ReadAllLines("Data.txt").ToList();
+            public void Display()
+            {
+                foreach(string line in allLinesText )
+                {
+                    Console.WriteLine(line);
+                }
+            }
+   
+            public void List()
+            {
+                for(int i = 1; i < allLinesText.Count; i++)
+                {
+                    Console.WriteLine(allLinesText[i]);
+                }
+            }
+
+            public void CEOList()
+            {
+                foreach (string line in allLinesText)
+                {
+                    if (line.Contains("CEO"))
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+
+            public void DEVList()
+            {
+                foreach (string line in allLinesText)
+                {
+                    if (line.Contains("DEV"))
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+
+            public void DSNRList()
+            {
+                foreach (string line in allLinesText)
+                {
+                    if (line.Contains("DSNR"))
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+            public void PMList()
+            {
+                foreach (string line in allLinesText)
+                {
+                    if (line.Contains("PM"))
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+
+            public void STList()
+            {
+                foreach (string line in allLinesText)
+                {
+                    if (line.Contains("ST"))
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+
+            public void Load()
+            {
+                List<string> allLinesText = File.ReadAllLines("Data.txt").ToList();
+                foreach(string line in allLinesText)
+                {
+                    string[] words = line.Split(", ");
+                    switch(words[0])
+                    {
+                        case ("CEO"):
+                            roles.CEO.Add(new Roles.ClassCEO
+                            {                   
+                                FirstName = words[1],
+                                LastName = words[2],
+                                Age = int.Parse(words[3]),
+                                CeoYears = int.Parse(words[4])
+                            });
+                            break;
+
+                        case ("PM"):
+                            roles.PM.Add(new Roles.ClassPM
+                            {
+                                FirstName = words[1],
+                                LastName = words[2],
+                                Age = int.Parse(words[3]),
+                                Project = words[4]
+                            });
+                            break;
+
+                        case ("DEV"):
+                            roles.DEV.Add(new Roles.ClassDEV
+                            {
+                                FirstName = words[1],
+                                LastName = words[2],
+                                Age = int.Parse(words[3]),
+                                Project = words[4],
+                                IsStudent = System.Convert.ToBoolean(words[5])
+                            }); ;
+                            break;
+
+                        case ("DSNR"):
+                            roles.DSNR.Add(new Roles.ClassDSNR
+                            {
+                                FirstName = words[1],
+                                LastName = words[2],
+                                Age = int.Parse(words[3]),
+                                Project = words[4],
+                                CanDraw = System.Convert.ToBoolean(words[5])
+                            });
+                            break;
+
+                        case ("ST"):
+                            roles.ST.Add(new Roles.ClassST
+                            {
+                                FirstName = words[1],
+                                LastName = words[2],
+                                Age = int.Parse(words[3]),
+                                Project = words[4],
+                                UsesAutomatedTests = System.Convert.ToBoolean(words[5])
+                            }); 
+                            break;
+
+                        default: continue;
+
+                    }
+                }
+            }
+        }
 
         static void Main()
         {
+            
             var memoryCache = new Roles();
             var Commands = new Commands(memoryCache);
-
+            Commands.Load();
+            Console.WriteLine("Data loaded.");
             Console.WriteLine("Available commands: Add, Remove, Display, List, <role_name>List");
 
-            Program p = new Program();
+       
             for (; ; )
             {
                 Console.Write("Command: ");
@@ -398,7 +513,14 @@ namespace Zadatak_1
                         Commands.STList();
                         Console.WriteLine("");
                         break;
+                        
+                    case "save":
+                        Commands.Save();
+                        break;
 
+                    case "load":
+                        Commands.Load();
+                        break;
 
                     default:
                         Console.WriteLine("Requested command does not exist. Available commands: Add, Remove, Display, List, <role_name>List");
