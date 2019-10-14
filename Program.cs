@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.IO;
-using System.Data.SqlClient;
-using Dapper;
+
 
 namespace Zadatak_1
 {
@@ -12,40 +7,59 @@ namespace Zadatak_1
     {
         static void Main()
         {
-         DataAccess db = new DataAccess();
-
-            var test = db.Data<ProjectManager>("SELECT TOP (2) FirstName, LastName,  ProjectId FROM dbo.PM ");
-
-            foreach (ProjectManager name in test) 
-                    {
-                Console.WriteLine(name.FirstName + name.ProjectId);
-                    }
-
-           
-            Help h = new Help();
-            h.AvailableCommands();
-
-
             List listAll = new List();
+            Display displayAll = new Display();
+            Help help = new Help();
+            CEORead ceoRead = new CEORead();
+            PMRead pmRead = new PMRead();
+            DEVRead devRead = new DEVRead();
+            DSNRRead dsnrRead = new DSNRRead();
+            STRead stRead = new STRead();
 
-            listAll.ReadEmpWithCEO();
-            
-            /*
-                var connectionString = "Server = (LocalDb)\\MSSQLLocalDB; Database = Zadatak1; Trusted_Connection = True; ";
-                using (SqlConnection connection = new SqlConnection(connectionString))
+            help.AvailableCommands();
+
+            for (; ; )
+            {
+                var unos = Console.ReadLine();
+                switch (unos)
                 {
-                    var FirstName = connection.QueryFirst<string>("SELECT TOP (1) FirstName FROM dbo.CEO");
-                    Console.WriteLine(FirstName);
-                   
-                }
-            
-            DataAccess db = new DataAccess();
-            db.GetPeople();
+                    case "List":
+                        listAll.ReadEmpWithCEO();
+                        break;
 
-            var memoryCache = new Roles();
-            var Commands = new Commands(memoryCache);
-            Commands.Load();
-            Console.WriteLine("Data loaded.");
+                    case "Display":
+                        displayAll.ReadEmpWithoutCEO();
+                        break;
+
+                    case "Help":
+                        help.AvailableCommands();
+                        break;
+
+                    case "CEOList":
+                        ceoRead.CEOList();
+                        break;
+
+                    case "PMList":
+                        pmRead.PMList();
+                        break;
+
+                    case "DEVList":
+                        devRead.DEVList();
+                        break;
+
+                    case "DSNRList":
+                        dsnrRead.DSNRList();
+                        break;
+
+                    case "STList":
+                        stRead.STList();
+                        break;
+                    default: break;
+
+
+                }
+            }
+/*
             Console.WriteLine("Available commands: Add, Remove, Display, List, <role_name>List");
             
                 for (; ;)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using Dapper;
 
 namespace Zadatak_1
 {
@@ -8,16 +10,20 @@ namespace Zadatak_1
     {
         public void ReadEmpWithCEO()
         {
-            DataAccess dataAccess = new DataAccess();
+            DataAccessList dataAccess = new DataAccessList();
+            Display display = new Display();
+
+   
+            var empWithCEO = dataAccess.Data<ListingProperties>(@"SELECT Roles.RoleName, FirstName, LastName, Age, '**No Project**' AS ProjectName FROM dbo.CEO                                         
+                                                        INNER JOIN Roles ON Roles.RoleId = CEO.RoleId").ToList();
 
 
-            var test = dataAccess.Data<ProjectManager>(@"SELECT *FirstName, LastName,  Project.ProjectName 
-                                                        FROM dbo.PM INNER JOIN Project ON Project.ProjectId=PM.ProjectId ");
-
-            foreach (ProjectManager name in test)
+            display.ReadEmpWithoutCEO();
+            foreach (ListingProperties emp in empWithCEO)
             {
-                Console.WriteLine("Role: " + name.FirstName + " " + name.LastName );
+                Console.WriteLine(String.Format(" {0,-10}{1,8}{2,12}{3,10}", emp.RoleName, emp.FirstName, emp.LastName, emp.Age));
             }
+
         }
     }
 }
