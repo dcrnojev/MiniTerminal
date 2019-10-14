@@ -11,15 +11,12 @@ namespace Zadatak_1
     {
         public List<T> Data<T>(string queryString)
         {
-            var connectionString = "Server = (LocalDb)\\MSSQLLocalDB; Database = Zadatak1; Trusted_Connection = True; ";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            //Evo primjer kako da ne ponavljaš connection string svugdje
+            using (SqlConnection connection = new SqlConnection(Settings.MainDbConnectionString))
             {
-
                 var ReturningObject = connection.Query<T>(queryString).ToList();
                 return ReturningObject;
             }
-
         }
     }
 
